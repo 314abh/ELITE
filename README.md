@@ -6,5 +6,5 @@ This project aims to revive the legendary game from scratch for easy execution o
 
 ### License
 
-The MIT License. Copyright (c) 2026 Abhigyan <314abh+source@gmail.com>.
+The MIT License. Copyright (c) 2026 Abhigyan Kumar \<314abh+source@gmail.com\>.
 
