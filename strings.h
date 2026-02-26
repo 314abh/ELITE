@@ -11,6 +11,6 @@ typedef struct {
 } String;
 
 String* String_new(const char* str);
-const char* const String_view(String* s);
+char* String_view(String* s);
 
 #endif

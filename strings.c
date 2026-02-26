@@ -29,4 +29,5 @@ String* String_new(const char* str) {
   return s;
 }
 
-const char* const String_view(String* s) { return s->_data; }
+char* String_view(String* s) { return s->_data; }
+
