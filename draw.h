@@ -21,6 +21,7 @@ typedef struct Color {
 Error set_screen(GameWindow* gw, Color c);
 
 Error Point_draw(GameWindow* gw, Point p);
+Error Points_draw(GameWindow* gw, Point* p_arr, size_t count);
 Error Line_draw(GameWindow* gw, Line a);
 
 Error draw(GameWindow* gw);

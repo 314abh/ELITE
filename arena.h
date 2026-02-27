@@ -133,6 +133,7 @@ void* arena_alloc_aligned(Arena* ar, size_t size, size_t align) {
   uintptr_t end = (uintptr_t)ar->_data + ar->_size;
 
   if (size > end - aligned) {
+    printf("Arena %p faulted.\n", ar);
     assert(false && "net allocation exceeded space.");
     return NULL;
   }

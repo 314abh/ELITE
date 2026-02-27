@@ -26,7 +26,7 @@ typedef struct {
 
 // Creates a new game window with the default settings.
 Error window_init(GameWindow* gw, size_t width, size_t height);
-void window_loop(GameWindow* gw);
+Error window_loop(GameWindow* gw);
 void window_close(GameWindow* gw);
 
 #endif /* ELITE_GAME_WINDOW_H */

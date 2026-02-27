@@ -14,6 +14,7 @@ typedef enum {
   // drawing errors
   ERR_SET_SCREEN,
   ERR_DRAW_POINT,
+  ERR_DRAW_POINTS,
   ERR_DRAW_LINE,
   ERR_DRAW_RENDER,
 } Error;
