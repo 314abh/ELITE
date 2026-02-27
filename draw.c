@@ -22,14 +22,14 @@ Error set_screen(GameWindow* gw, Color c) {
   return ERR_OK;
 }
 
-Error draw_point(GameWindow* gw, Point p) {
+Error Point_draw(GameWindow* gw, Point p) {
   SDL_FPoint coords = ndc_to_screen(gw, p);
   bool ok = SDL_RenderPoints(gw->renderer, &coords, 1);
   if (!ok) return ERR_DRAW_POINT;
   return ERR_OK;
 }
 
-Error draw_line(GameWindow* gw, Line l) {
+Error Line_draw(GameWindow* gw, Line l) {
   SDL_FPoint a = ndc_to_screen(gw, l.a);
   SDL_FPoint b = ndc_to_screen(gw, l.b);
   SDL_FPoint line[] = {a, b};

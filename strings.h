@@ -10,7 +10,7 @@ typedef struct {
   char* _data;
 } String;
 
-String* String_new(const char* str);
-char* String_view(String* s);
+String* string_new(const char* str);
+char* string_view(String* s);
 
 #endif

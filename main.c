@@ -11,10 +11,10 @@
 int main(void) {
   Error err;
   int exit_code = 0;
-  Arena* gw_arena = Arena_new(1 << 12);
-  Arena_push(gw_arena);
+  Arena* gw_arena = arena_new(1 << 12);
+  arena_push(gw_arena);
 
-  GameWindow* gw = Arena_alloc(gw_arena, sizeof(*gw));
+  GameWindow* gw = arena_alloc(gw_arena, sizeof(*gw));
   err = window_init(gw, WIDTH, HEIGHT);
 
   if (err) {
@@ -27,7 +27,7 @@ int main(void) {
 
 cleanup:
   window_close(gw);
-  Arena_pop();
-  Arena_del(gw_arena);
+  arena_pop();
+  arena_del(gw_arena);
   return exit_code;
 }

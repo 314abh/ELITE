@@ -16,12 +16,12 @@ typedef struct Color {
   uint8_t r, g, b, a;
 } Color;
 
-#define new_color(r, g, b, a) ((Color){r, g, b, a})
+#define color_new(r, g, b, a) ((Color){r, g, b, a})
 
 Error set_screen(GameWindow* gw, Color c);
 
-Error draw_point(GameWindow* gw, Point p);
-Error draw_line(GameWindow* gw, Line a);
+Error Point_draw(GameWindow* gw, Point p);
+Error Line_draw(GameWindow* gw, Line a);
 
 Error draw(GameWindow* gw);
 

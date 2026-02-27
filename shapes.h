@@ -23,8 +23,8 @@ typedef struct Triangle {
   Point vertices[3];
 } Triangle;
 
-#define new_point(x, y) ((Point){(x), (y)})
-#define new_line(a, b) ((Line){(a), (b)})
+#define point_new(x, y) ((Point){(x), (y)})
+#define line_new(a, b) ((Line){(a), (b)})
 
 // Primitive coordinates arithmetic
 Point point_add(Point a, Point b);

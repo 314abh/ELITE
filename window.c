@@ -41,7 +41,7 @@ void window_loop(GameWindow* gw) {
     SDL_PollEvent(&event);
     if (event.type == SDL_EVENT_QUIT) break;
 
-    set_screen(gw, new_color(0x00, 0xFF, 0x00, 0x00));
+    set_screen(gw, color_new(0x00, 0xFF, 0x00, 0x00));
     draw(gw);
   }
 }

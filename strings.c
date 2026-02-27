@@ -6,8 +6,8 @@
 
 #include "arena.h"
 
-String* String_new(const char* str) {
-  Arena* ctx = Arena_local();
+String* string_new(const char* str) {
+  Arena* ctx = arena_local();
   if (ctx == NULL) {
     assert(false && "arena stack is empty.");
     return NULL;
@@ -16,8 +16,8 @@ String* String_new(const char* str) {
   size_t len = strlen(str);
   size_t cap = len + 1;
 
-  char* data = Arena_alloc(ctx, sizeof(char) * cap);
-  String* s = Arena_alloc(ctx, sizeof(String));
+  char* data = arena_alloc(ctx, sizeof(char) * cap);
+  String* s = arena_alloc(ctx, sizeof(String));
 
   memcpy(data, str, len);
   data[len] = '\0';
@@ -29,5 +29,4 @@ String* String_new(const char* str) {
   return s;
 }
 
-char* String_view(String* s) { return s->_data; }
-
+char* string_view(String* s) { return s->_data; }

@@ -62,29 +62,30 @@
 #endif
 
 typedef struct Arena {
-  void *_pos, *_data;
+  void* _pos;
   size_t _size;
+  char _data[];
 } Arena;
 
-Arena* Arena_new(size_t size);
-void* Arena_alloc_aligned(Arena* ar, size_t size, size_t align);
-void Arena_del(Arena* ar);
-size_t Arena_used(Arena* ar);
-size_t Arena_available(Arena* ar);
+Arena* arena_new(size_t size);
+void* arena_alloc_aligned(Arena* ar, size_t size, size_t align);
+void arena_del(Arena* ar);
+size_t arena_used(Arena* ar);
+size_t arena_available(Arena* ar);
 
-int Arena_push(Arena* ar);  // returns negative number if it's a stack overflow
-Arena* Arena_local(void);
-void Arena_pop(void);
+int arena_push(Arena* ar);  // returns negative number if it's a stack overflow
+Arena* arena_local(void);
+void arena_pop(void);
 
-#define Arena_alloc(a, s) (Arena_alloc_aligned(a, s, alignof(max_align_t)))
+#define arena_alloc(a, s) (arena_alloc_aligned(a, s, alignof(max_align_t)))
 #define DO_SCRATCH(a) \
-  for (size_t _i = (Arena_push(a), 0); _i < 1; ++_i, Arena_pop())
+  for (size_t _i = (arena_push(a), 0); _i < 1; ++_i, arena_pop())
 
 #endif /* ARENA_H_ */
 
 #ifdef ARENA_IMPLEMENT
 
-size_t Arena_used(Arena* ar) {
+size_t arena_used(Arena* ar) {
   if (ar == NULL) return 0;
 
   const char* head = (const char*)ar->_data;
@@ -94,7 +95,7 @@ size_t Arena_used(Arena* ar) {
   return used;
 }
 
-size_t Arena_available(Arena* ar) {
+size_t arena_available(Arena* ar) {
   if (ar == NULL) return 0;
 
   const char* head = (const char*)ar->_data;
@@ -106,25 +107,18 @@ size_t Arena_available(Arena* ar) {
   return available;
 }
 
-Arena* Arena_new(size_t size) {
+Arena* arena_new(size_t size) {
   size = (size ? size : ARENA_DEF_SIZE);
 
-  Arena* ar = ASL_MALLOC(sizeof(*ar));
+  Arena* ar = ASL_MALLOC(sizeof(*ar) + size);
   if (ar == NULL) return NULL;
 
-  void* data = ASL_MALLOC(size);
-  if (data == NULL) {
-    ASL_FREE(ar);
-    return NULL;
-  }
-
-  ar->_pos = data;
-  ar->_data = data;
+  ar->_pos = ar->_data;
   ar->_size = size;
   return ar;
 }
 
-void* Arena_alloc_aligned(Arena* ar, size_t size, size_t align) {
+void* arena_alloc_aligned(Arena* ar, size_t size, size_t align) {
   if (ar == NULL) return NULL;
 
   if (size == 0 || align == 0) return NULL;
@@ -147,44 +141,40 @@ void* Arena_alloc_aligned(Arena* ar, size_t size, size_t align) {
   return (void*)aligned;
 }
 
-void Arena_wipe(Arena* ar) {
+void arena_wipe(Arena* ar) {
   if (ar == NULL) return;
-
   ar->_pos = ar->_data;
 }
 
-void Arena_del(Arena* ar) {
+void arena_del(Arena* ar) {
   if (ar == NULL) return;
-
-  ASL_FREE(ar->_data);
   ASL_FREE(ar);
 }
 
 static thread_local Arena* ARENA__STACK__[MAX_ARENA_STACK];
 static thread_local int ARENA_STACK_TOP_INDEX__ = -1;
 
-#define Arena_Stack ARENA__STACK__
-#define Arena_Top ARENA_STACK_TOP_INDEX__
+#define arena_Stack ARENA__STACK__
+#define arena_Top ARENA_STACK_TOP_INDEX__
 
-int Arena_push(Arena* ar) {
-  if (Arena_Top < MAX_ARENA_STACK - 1) {
-    Arena_Stack[++Arena_Top] = ar;
-    return Arena_Top;
+int arena_push(Arena* ar) {
+  if (arena_Top < MAX_ARENA_STACK - 1) {
+    arena_Stack[++arena_Top] = ar;
+    return arena_Top;
   }
 
   return -1;
 }
 
-Arena* Arena_local(void) {
-  return (Arena_Top >= 0) ? Arena_Stack[Arena_Top] : NULL;
+Arena* arena_local(void) {
+  return (arena_Top >= 0) ? arena_Stack[arena_Top] : NULL;
 }
 
-void Arena_pop(void) {
-  // optional: arena_del(arena_local());
-  if (Arena_Top >= 0) Arena_Top--;
+void arena_pop(void) {
+  if (arena_Top >= 0) arena_Top--;
 }
 
-#undef Arena_Top
-#undef Arena_Stack
+#undef arena_Top
+#undef arena_Stack
 
 #endif /* ARENA_IMPLEMENT */
