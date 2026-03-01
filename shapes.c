@@ -6,7 +6,6 @@
 #include "shapes.h"
 
 #include <math.h>
-#include "arena.h"
 
 // Point new_point(float x, float y) { return (Point){x, y}; }
 // Line new_line(Point a, Point b) { return (Line){a, b}; }

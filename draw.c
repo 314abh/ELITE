@@ -2,9 +2,13 @@
 
 #include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_render.h>
+#include <SDL3/SDL_stdinc.h>
 #include <stddef.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "arena.h"
+#include "shapes.h"
 #include "window.h"
 
 SDL_FPoint ndc_to_screen(GameWindow* window, Point p) {
@@ -76,8 +80,53 @@ Error triangle_draw(GameWindow* gw, Triangle t, SDL_FColor fill) {
 // TODO
 Error ring_draw(GameWindow* gw, Circle c) { return ERR_OK; }
 
-// TODO
-Error circle_draw(GameWindow* gw, Circle c, SDL_FColor fill) { return ERR_OK; }
+Error circle_draw(GameWindow* gw, Circle c, SDL_FColor fill) {
+  size_t SIDES_COUNT = 32;
+  Point center = c.center;
+  Point radius = point_add(center, point_new(0, c.radius));
+  ;
+
+  bool ok =
+      SDL_SetRenderDrawColor(gw->renderer, fill.r, fill.g, fill.b, fill.a);
+  if (!ok) return ERR_DRAW_CIRCLE;
+
+  Arena* ctx = arena_new(1 << 12);
+  Point* vertices = arena_alloc(ctx, sizeof(*vertices) * SIDES_COUNT);
+  SDL_Vertex* sdl_vertices =
+      arena_alloc(ctx, sizeof(*sdl_vertices) * (SIDES_COUNT + 1));
+  float angle_per_vertex = 2 * SDL_PI_F / SIDES_COUNT;
+
+  vertices[0] = radius;
+
+  sdl_vertices[0] =
+      (SDL_Vertex){.position = ndc_to_screen(gw, center), .color = fill};
+  sdl_vertices[1] =
+      (SDL_Vertex){.position = ndc_to_screen(gw, radius), .color = fill};
+
+  for (size_t i = 1; i < SIDES_COUNT; ++i) {
+    vertices[i] = rotate_point(vertices[i - 1], center, angle_per_vertex);
+    sdl_vertices[i + 1] = (SDL_Vertex){
+        .position = ndc_to_screen(gw, vertices[i]),
+        .color = fill,
+    };
+  }
+
+  int sdl_indices[] = {
+      0,  1,  2,  0,  2,  3,  0,  3,  4,  0,  4,  5,  0,  5,  6,  0,
+      6,  7,  0,  7,  8,  0,  8,  9,  0,  9,  10, 0,  10, 11, 0,  11,
+      12, 0,  12, 13, 0,  13, 14, 0,  14, 15, 0,  15, 16, 0,  16, 17,
+      0,  17, 18, 0,  18, 19, 0,  19, 20, 0,  20, 21, 0,  21, 22, 0,
+      22, 23, 0,  23, 24, 0,  24, 25, 0,  25, 26, 0,  26, 27, 0,  27,
+      28, 0,  28, 29, 0,  29, 30, 0,  30, 31, 0,  31, 32, 0,  32, 1,
+  };
+
+  ok = SDL_RenderGeometry(gw->renderer, NULL, sdl_vertices, SIDES_COUNT + 1,
+                          sdl_indices, sizeof(sdl_indices) / sizeof(*sdl_indices));
+  if (!ok) return ERR_DRAW_CIRCLE;
+
+  arena_del(ctx);
+  return ERR_OK;
+}
 
 Error draw(GameWindow* gw) {
   bool ok = SDL_RenderPresent(gw->renderer);

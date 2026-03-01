@@ -63,15 +63,17 @@ Error window_loop(GameWindow* gw) {
   Point rotated_stars[stars_count];
   memcpy(rotated_stars, stars, sizeof(*stars) * stars_count);
 
-  Triangle tri = {0};
+  Circle c = { .center = point_new(0.0f, 0.0f), .radius = 0.3f };
   SDL_FColor fill = {0xff, 0xff, 0x00, 0xff};
-  tri.vertices[0] = origin;
-  tri.vertices[1] = point_new(0.3f, 0.0f);
-  tri.vertices[2] = point_new(0.3f, -0.3f);
+  // Triangle tri = {0};
+  // SDL_FColor fill = {0xff, 0xff, 0x00, 0xff};
+  // tri.vertices[0] = origin;
+  // tri.vertices[1] = point_new(0.3f, 0.0f);
+  // tri.vertices[2] = point_new(0.3f, -0.3f);
 
   // handle timings.
   float speed = 3.0f / width;
-  float rotation_angle, rotation_speed = - SDL_PI_F / 180.0f;
+  float rotation_angle, rotation_speed = -SDL_PI_F / 180.0f;
   Uint64 current_time, last_time = SDL_GetTicks();
 
   // TODO: implement error logging.
@@ -98,9 +100,12 @@ Error window_loop(GameWindow* gw) {
     err = points_draw(gw, stars, stars_count);
     if (err) goto cleanup;
 
-    err = triangle_draw(gw, tri, fill);
-    tri.vertices[0].y += speed * dt;
+    err = circle_draw(gw, c, fill);
     if (err) goto cleanup;
+
+    // err = triangle_draw(gw, tri, fill);
+    // tri.vertices[0].y += speed * dt;
+    // if (err) goto cleanup;
 
     memcpy(rotated_stars, stars, sizeof(*stars) * stars_count);
     draw(gw);
