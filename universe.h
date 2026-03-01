@@ -7,10 +7,10 @@
 #include "arena.h"
 #include "shapes.h"
 
-Point* plot_stars(size_t stars_count) {
+Vec2* plot_stars(size_t stars_count) {
     Arena* ctx = arena_local();
     printf("LOOP_ARENA: %p", ctx);
-    Point* stars_arr = arena_alloc(ctx, sizeof(*stars_arr) * stars_count);
+    Vec2* stars_arr = arena_alloc(ctx, sizeof(*stars_arr) * stars_count);
     static thread_local bool initialized = false;
     if (!initialized) {
         srand(time(NULL));

@@ -8,42 +8,42 @@
 
 #include <stddef.h>
 
-typedef struct Point {
+typedef struct Vec2 {
   float x, y;
-} Point;
+} Vec2;
 
 typedef struct Line {
-  Point a, b;
+  Vec2 a, b;
 } Line;
 
 typedef struct Circle {
   float radius;
-  Point center;
+  Vec2 center;
 } Circle;
 
 typedef struct Triangle {
-  Point vertices[3];
+  Vec2 vertices[3];
 } Triangle;
 
-#define point_new(x, y) ((Point){(x), (y)})
+#define point_new(x, y) ((Vec2){(x), (y)})
 #define line_new(a, b) ((Line){(a), (b)})
 
 // Primitive coordinates arithmetic
-Point point_add(Point a, Point b);
-Point point_sub(Point a, Point b);
-float point_dot(Point a, Point b);
-Point point_cross(Point a, Point b);
+Vec2 point_add(Vec2 a, Vec2 b);
+Vec2 point_sub(Vec2 a, Vec2 b);
+float point_dot(Vec2 a, Vec2 b);
+Vec2 point_cross(Vec2 a, Vec2 b);
 
 // Translations
-Point rotate_point(Point p, Point pivot, float radians);
-Point* rotate_points(Point* points, size_t points_count, Point pivot, float radians);
+Vec2 rotate_point(Vec2 p, Vec2 pivot, float radians);
+Vec2* rotate_points(Vec2* points, size_t points_count, Vec2 pivot, float radians);
 
 // Scalars
 float line_length(Line l);
 
 // Triangle functions
-Point triangle_centroid(Triangle t);
-Point triangle_orthocenter(Triangle t);
-Point triangle_circumcenter(Triangle t);
+Vec2 triangle_centroid(Triangle t);
+Vec2 triangle_orthocenter(Triangle t);
+Vec2 triangle_circumcenter(Triangle t);
 
 #endif /* ELITE_SHAPES_H */

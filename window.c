@@ -53,14 +53,14 @@ Error window_loop(GameWindow* gw) {
   size_t width = gw->width;
   size_t height = gw->height;
 
-  Arena* loop_arena = arena_new(1 << 12);
+  Arena* loop_arena = arena_new(1 << 16);
   arena_push(loop_arena);
   printf("LOOP_ARENA: %p", loop_arena);
 
-  Point origin = point_new(0.0f, 0.0f);
+  Vec2 origin = point_new(0.0f, 0.0f);
   size_t stars_count = width * height * (5.0f * 1e-4);
-  Point* stars = plot_stars(stars_count);
-  Point rotated_stars[stars_count];
+  Vec2* stars = plot_stars(stars_count);
+  Vec2 rotated_stars[stars_count];
   memcpy(rotated_stars, stars, sizeof(*stars) * stars_count);
 
   Circle c = { .center = point_new(0.0f, 0.0f), .radius = 0.3f };
@@ -73,7 +73,7 @@ Error window_loop(GameWindow* gw) {
 
   // handle timings.
   float speed = 3.0f / width;
-  float rotation_angle, rotation_speed = -SDL_PI_F / 180.0f;
+  float rotation_angle, rotation_speed = -SDL_PI_F / 60.0f;
   Uint64 current_time, last_time = SDL_GetTicks();
 
   // TODO: implement error logging.

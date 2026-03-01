@@ -20,8 +20,8 @@ typedef struct Color {
 
 Error set_screen(GameWindow* gw, SDL_Color c);
 
-Error point_draw(GameWindow* gw, Point p);
-Error points_draw(GameWindow* gw, Point* p_arr, size_t count);
+Error point_draw(GameWindow* gw, Vec2 p);
+Error points_draw(GameWindow* gw, Vec2* p_arr, size_t count);
 Error line_draw(GameWindow* gw, Line a);
 
 Error triangle_draw(GameWindow* gw, Triangle t, SDL_FColor fill);

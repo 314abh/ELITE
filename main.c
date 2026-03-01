@@ -5,7 +5,7 @@
 #include "window.h"
 
 #define WIDTH 800
-#define HEIGHT 800
+#define HEIGHT 600
 
 int main(void) {
   Error err;

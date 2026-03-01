@@ -11,10 +11,15 @@
 #include "shapes.h"
 #include "window.h"
 
-SDL_FPoint ndc_to_screen(GameWindow* window, Point p) {
+SDL_FPoint ndc_to_screen(GameWindow* gw, Vec2 ndc) {
+  float width = (float)gw->width;
+  float height = (float)gw->height;
+  float aspect_ratio = width / height;
+  float x_correction = ndc.x / aspect_ratio;
+
   return (SDL_FPoint){
-      (float)window->width / 2 * (p.x + 1),
-      (float)window->height / 2 * (1 - p.y),
+    width * (x_correction + 1.0f) / 2.0f,
+    ((1.0f - ndc.y) / 2.0f) * height
   };
 }
 
@@ -29,14 +34,14 @@ Error set_screen(GameWindow* gw, SDL_Color c) {
   return ERR_OK;
 }
 
-Error point_draw(GameWindow* gw, Point p) {
+Error point_draw(GameWindow* gw, Vec2 p) {
   SDL_FPoint coords = ndc_to_screen(gw, p);
   bool ok = SDL_RenderPoints(gw->renderer, &coords, 1);
   if (!ok) return ERR_DRAW_POINT;
   return ERR_OK;
 }
 
-Error points_draw(GameWindow* gw, Point* p_arr, size_t count) {
+Error points_draw(GameWindow* gw, Vec2* p_arr, size_t count) {
   Arena* ctx = arena_new(1 << 13);
   SDL_FPoint* coords_arr = arena_alloc(ctx, sizeof(*coords_arr) * count);
 
@@ -82,8 +87,8 @@ Error ring_draw(GameWindow* gw, Circle c) { return ERR_OK; }
 
 Error circle_draw(GameWindow* gw, Circle c, SDL_FColor fill) {
   size_t SIDES_COUNT = 32;
-  Point center = c.center;
-  Point radius = point_add(center, point_new(0, c.radius));
+  Vec2 center = c.center;
+  Vec2 radius = point_add(center, point_new(0, c.radius));
   ;
 
   bool ok =
@@ -91,7 +96,7 @@ Error circle_draw(GameWindow* gw, Circle c, SDL_FColor fill) {
   if (!ok) return ERR_DRAW_CIRCLE;
 
   Arena* ctx = arena_new(1 << 12);
-  Point* vertices = arena_alloc(ctx, sizeof(*vertices) * SIDES_COUNT);
+  Vec2* vertices = arena_alloc(ctx, sizeof(*vertices) * SIDES_COUNT);
   SDL_Vertex* sdl_vertices =
       arena_alloc(ctx, sizeof(*sdl_vertices) * (SIDES_COUNT + 1));
   float angle_per_vertex = 2 * SDL_PI_F / SIDES_COUNT;

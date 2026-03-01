@@ -7,14 +7,14 @@
 
 #include <math.h>
 
-// Point new_point(float x, float y) { return (Point){x, y}; }
-// Line new_line(Point a, Point b) { return (Line){a, b}; }
+// Vec2 new_point(float x, float y) { return (Vec2){x, y}; }
+// Line new_line(Vec2 a, Vec2 b) { return (Line){a, b}; }
 
-Point point_add(Point a, Point b) { return point_new(a.x + b.x, a.y + b.y); }
-Point point_sub(Point a, Point b) { return point_new(a.x - b.x, a.y - b.y); }
-float point_dot(Point a, Point b) { return a.x * b.x + a.y * b.y; }
+Vec2 point_add(Vec2 a, Vec2 b) { return point_new(a.x + b.x, a.y + b.y); }
+Vec2 point_sub(Vec2 a, Vec2 b) { return point_new(a.x - b.x, a.y - b.y); }
+float point_dot(Vec2 a, Vec2 b) { return a.x * b.x + a.y * b.y; }
 
-Point rotate_point(Point p, Point pivot, float radians) {
+Vec2 rotate_point(Vec2 p, Vec2 pivot, float radians) {
   float x1 = p.x, y1 = p.y;
   float x2 = pivot.x, y2 = pivot.y;
   float delta_x = x1 - x2, delta_y = y1 - y2;
@@ -26,7 +26,7 @@ Point rotate_point(Point p, Point pivot, float radians) {
                    y2 + delta_y * c + delta_x * s);
 }
 
-Point* rotate_points(Point* points, size_t points_count, Point pivot, float radians) {
+Vec2* rotate_points(Vec2* points, size_t points_count, Vec2 pivot, float radians) {
   for (size_t i = 0; i < points_count; ++i) {
     points[i] = rotate_point(points[i], pivot, radians);
   }
@@ -34,7 +34,7 @@ Point* rotate_points(Point* points, size_t points_count, Point pivot, float radi
   return points;
 }
 
-Point mid_point(Point a, Point b) {
+Vec2 mid_point(Vec2 a, Vec2 b) {
   return point_new((a.x + b.x) / 2, (a.y + b.y) / 2);
 }
 
