@@ -6,6 +6,7 @@
 #include "shapes.h"
 
 #include <math.h>
+#include "arena.h"
 
 // Point new_point(float x, float y) { return (Point){x, y}; }
 // Line new_line(Point a, Point b) { return (Line){a, b}; }
@@ -24,6 +25,14 @@ Point rotate_point(Point p, Point pivot, float radians) {
 
   return point_new(x2 + delta_x * c - delta_y * s,
                    y2 + delta_y * c + delta_x * s);
+}
+
+Point* rotate_points(Point* points, size_t points_count, Point pivot, float radians) {
+  for (size_t i = 0; i < points_count; ++i) {
+    points[i] = rotate_point(points[i], pivot, radians);
+  }
+
+  return points;
 }
 
 Point mid_point(Point a, Point b) {

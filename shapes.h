@@ -6,6 +6,8 @@
 #ifndef ELITE_SHAPES_H
 #define ELITE_SHAPES_H
 
+#include <stddef.h>
+
 typedef struct Point {
   float x, y;
 } Point;
@@ -34,6 +36,7 @@ Point point_cross(Point a, Point b);
 
 // Translations
 Point rotate_point(Point p, Point pivot, float radians);
+Point* rotate_points(Point* points, size_t points_count, Point pivot, float radians);
 
 // Scalars
 float line_length(Line l);
