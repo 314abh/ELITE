@@ -16,5 +16,6 @@ typedef enum {
   ERR_DRAW_POINT,
   ERR_DRAW_POINTS,
   ERR_DRAW_LINE,
+  ERR_DRAW_TRIANGLE,
   ERR_DRAW_RENDER,
 } Error;

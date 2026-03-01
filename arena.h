@@ -34,7 +34,6 @@
 #ifndef ARENA_H_
 #define ARENA_H_
 
-#include <assert.h>
 #include <stdalign.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -44,14 +43,19 @@
 
 #if !defined(ASL_REALLOC) && !defined(ASL_FREE)
 #include <stdlib.h>
-#define ASL_REALLOC(p, s) realloc(p, s)
-#define ASL_MALLOC(s) ASL_REALLOC(NULL, s)
-#define ASL_FREE(s) free(s)
-#endif
+#define ARENA_REALLOC(p, s) realloc(p, s)
+#define ARENA_MALLOC(s) ARENA_REALLOC(NULL, s)
+#define ARENA_FREE(s) free(s)
+#endif 
 #if defined(ASL_REALLOC) && !defined(ASL_FREE) || \
     !defined(ASL_REALLOC) && defined(ASL_FREE)
 #error "You must defined both, ASL_REALLOC and ASL_FREE."
-#endif
+#endif /* ASL_REALLOC && ASL_FREE */
+
+#ifndef ARENA_ASSERT
+#include <assert.h>
+#define ARENA_ASSERT(x) assert(x)
+#endif /* ARENA_ASSERT */
 
 #ifndef ARENA_DEF_SIZE
 #define ARENA_DEF_SIZE 2048
@@ -83,99 +87,3 @@ void arena_pop(void);
 
 #endif /* ARENA_H_ */
 
-#ifdef ARENA_IMPLEMENT
-
-size_t arena_used(Arena* ar) {
-  if (ar == NULL) return 0;
-
-  const char* head = (const char*)ar->_data;
-  const char* tail = (const char*)ar->_pos;
-
-  size_t used = (size_t)(tail - head);
-  return used;
-}
-
-size_t arena_available(Arena* ar) {
-  if (ar == NULL) return 0;
-
-  const char* head = (const char*)ar->_data;
-  const char* tail = (const char*)ar->_pos;
-
-  size_t size = ar->_size;
-  size_t used = (size_t)(tail - head);
-  size_t available = size - used;
-  return available;
-}
-
-Arena* arena_new(size_t size) {
-  size = (size ? size : ARENA_DEF_SIZE);
-
-  Arena* ar = ASL_MALLOC(sizeof(*ar) + size);
-  if (ar == NULL) return NULL;
-
-  ar->_pos = ar->_data;
-  ar->_size = size;
-  return ar;
-}
-
-void* arena_alloc_aligned(Arena* ar, size_t size, size_t align) {
-  if (ar == NULL) return NULL;
-
-  if (size == 0 || align == 0) return NULL;
-
-  // if align is not a multiple of 2, return NULL
-  if ((align & (align - 1)) != 0) return NULL;
-
-  uintptr_t current = (uintptr_t)ar->_pos;
-  if (current > UINTPTR_MAX - (align - 1)) return NULL;  // check for overflow
-
-  uintptr_t aligned = (current + align - 1) & ~(uintptr_t)(align - 1);
-  uintptr_t end = (uintptr_t)ar->_data + ar->_size;
-
-  if (size > end - aligned) {
-    printf("Arena %p faulted.\n", ar);
-    assert(false && "net allocation exceeded space.");
-    return NULL;
-  }
-
-  ar->_pos = (void*)(aligned + size);
-  return (void*)aligned;
-}
-
-void arena_wipe(Arena* ar) {
-  if (ar == NULL) return;
-  ar->_pos = ar->_data;
-}
-
-void arena_del(Arena* ar) {
-  if (ar == NULL) return;
-  ASL_FREE(ar);
-}
-
-static thread_local Arena* ARENA__STACK__[MAX_ARENA_STACK];
-static thread_local int ARENA_STACK_TOP_INDEX__ = -1;
-
-#define arena_Stack ARENA__STACK__
-#define arena_Top ARENA_STACK_TOP_INDEX__
-
-int arena_push(Arena* ar) {
-  if (arena_Top < MAX_ARENA_STACK - 1) {
-    arena_Stack[++arena_Top] = ar;
-    return arena_Top;
-  }
-
-  return -1;
-}
-
-Arena* arena_local(void) {
-  return (arena_Top >= 0) ? arena_Stack[arena_Top] : NULL;
-}
-
-void arena_pop(void) {
-  if (arena_Top >= 0) arena_Top--;
-}
-
-#undef arena_Top
-#undef arena_Stack
-
-#endif /* ARENA_IMPLEMENT */

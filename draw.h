@@ -16,13 +16,18 @@ typedef struct Color {
   uint8_t r, g, b, a;
 } Color;
 
-#define color_new(r, g, b, a) ((Color){r, g, b, a})
+#define color_new(r, g, b, a) ((SDL_Color){r, g, b, a})
 
-Error set_screen(GameWindow* gw, Color c);
+Error set_screen(GameWindow* gw, SDL_Color c);
 
-Error Point_draw(GameWindow* gw, Point p);
-Error Points_draw(GameWindow* gw, Point* p_arr, size_t count);
-Error Line_draw(GameWindow* gw, Line a);
+Error point_draw(GameWindow* gw, Point p);
+Error points_draw(GameWindow* gw, Point* p_arr, size_t count);
+Error line_draw(GameWindow* gw, Line a);
+
+Error triangle_draw(GameWindow* gw, Triangle t, SDL_FColor fill);
+
+Error ring_draw(GameWindow* gw, Circle c);
+Error circle_draw(GameWindow* gw, Circle c, SDL_FColor fill);
 
 Error draw(GameWindow* gw);
 

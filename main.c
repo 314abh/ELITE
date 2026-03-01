@@ -1,7 +1,6 @@
 /* -- main.c */
 #include <stdio.h>
 
-#define ARENA_IMPLEMENT
 #include "arena.h"
 #include "window.h"
 
