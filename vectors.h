@@ -5,17 +5,17 @@
 
 typedef float Mat2[4];
 typedef struct Vec2 {
-    float x, y;
+  float x, y;
 } Vec2;
 
 typedef float Mat3[9];
 typedef struct Vec3 {
-    float x, y, z;
+  float x, y, z;
 } Vec3;
 
 typedef float Mat4[16];
 typedef struct Vec4 {
-    float x, y, z, w;
+  float x, y, z, w;
 } Vec4;
 
 // vec3
@@ -33,12 +33,16 @@ Vec3 vec3_normalized(Vec3 v);
 
 // vec4
 
-Vec3 vec4_new(const float x, const float y, const float z, const float w);
+Vec4 vec4_new(const float x, const float y, const float z, const float w);
 
 Vec4 vec4_add(Vec4 a, Vec4 b);
 Vec4 vec4_sub(Vec4 a, Vec4 b);
 float vec4_dot(Vec4 a, Vec4 b);
-Vec4 vec4_cross(Vec4 a, Vec4 b);
+// Vec4 vec4_cross(Vec4 a, Vec4 b);
+
+float vec4_len(Vec4 v);
+float vec4_len_sq(Vec4 v);
+Vec4 vec4_normalized(Vec4 v);
 
 // mat3
 
