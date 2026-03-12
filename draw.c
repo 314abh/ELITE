@@ -89,7 +89,6 @@ Error circle_draw(GameWindow* gw, Circle c, SDL_FColor fill) {
   size_t SIDES_COUNT = 32;
   Vec2 center = c.center;
   Vec2 radius = point_add(center, point_new(0, c.radius));
-  ;
 
   bool ok =
       SDL_SetRenderDrawColor(gw->renderer, fill.r, fill.g, fill.b, fill.a);

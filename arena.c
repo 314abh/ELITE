@@ -29,7 +29,7 @@ Arena* arena_new(size_t size) {
 
   Arena* ar = ARENA_MALLOC(sizeof(*ar) + size);
   if (ar == NULL) return NULL;
-
+  
   ar->_pos = ar->_data;
   ar->_size = size;
   return ar;
